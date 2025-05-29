@@ -55,7 +55,7 @@ function Admin() {
 
       <h2>Menu</h2>
       <ul>
-        {menu?.map((item) => (
+        {menu.map((item) => (
           <li key={item._id}>
             <span className="menu-item">{item.name}</span>
             <span className="price">${item.price}</span>
@@ -87,7 +87,7 @@ function Admin() {
 
       <h2>Orders</h2>
       <ul>
-        {orders?.map((order) => (
+        {orders.map((order) => (
           <li key={order._id}>
             <span>Order #{order._id}</span>
             <span>Total: ${order.totalAmount.toFixed(2)}</span>
