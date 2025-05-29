@@ -20,7 +20,7 @@ function Menu() {
   const placeOrder = async () => {
     if (order.length > 0) {
       await axios.post('http://localhost:5000/order', {
-        items: order,
+        menuItems: order,
         totalAmount: total,
       });
       alert('Order placed successfully!');

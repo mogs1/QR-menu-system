@@ -7,19 +7,29 @@ function Admin() {
   const [orders, setOrders] = useState([]);
   const [newItem, setNewItem] = useState({ name: '', description: '', price: '' });
 
+  const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+
   const fetchMenu = async () => {
-    const res = await axios.get('http://localhost:5000/menu');
+    const res = await axios.get(`${apiUrl}/menu`);
+    if (res.data === 'No menu items found') {
+      alert('No menu items found. Please add some items.');
+      return;
+    }
     setMenu(res.data);
   };
 
   const fetchOrders = async () => {
-    const res = await axios.get('http://localhost:5000/order');
+    const res = await axios.get(`${apiUrl}/order`);
+    if (res.data === 'No orders found') {
+      alert('No orders found.'); 
+      return;
+    }
     setOrders(res.data);
   };
 
   const addMenuItem = async () => {
     if (newItem.name && newItem.price) {
-      await axios.post('http://localhost:5000/menu', newItem);
+      await axios.post(`${apiUrl}/menu`, newItem);
       setNewItem({ name: '', description: '', price: '' });
       fetchMenu();
     } else {
@@ -29,7 +39,7 @@ function Admin() {
 
   const deleteMenuItem = async (id) => {
     if (window.confirm('Are you sure you want to delete this item?')) {
-      await axios.delete(`http://localhost:5000/menu/${id}`);
+      await axios.delete(`${apiUrl}/menu/${id}`);
       fetchMenu(); // Refresh the menu
     }
   };
@@ -45,7 +55,7 @@ function Admin() {
 
       <h2>Menu</h2>
       <ul>
-        {menu.map((item) => (
+        {menu?.map((item) => (
           <li key={item._id}>
             <span className="menu-item">{item.name}</span>
             <span className="price">${item.price}</span>
@@ -77,14 +87,14 @@ function Admin() {
 
       <h2>Orders</h2>
       <ul>
-        {orders.map((order) => (
+        {orders?.map((order) => (
           <li key={order._id}>
             <span>Order #{order._id}</span>
-            <span>Total: ${order.totalAmount}</span>
+            <span>Total: ${order.totalAmount.toFixed(2)}</span>
             <ul>
-              {order.menuItems.map((item, index) => (
+              {menu.map((item, index) => (
                 <li key={index}>
-                  {item.name} - ${item.price} (x{item.quantity})
+                  {item.name} - ${item.price.toFixed(2)} (x{item.quantity})
                 </li>
               ))}
             </ul>
