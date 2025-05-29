@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import '../index.css';
 
@@ -9,23 +9,23 @@ function Admin() {
 
   const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
-  const fetchMenu = async () => {
+  const fetchMenu = useCallback(async () => {
     const res = await axios.get(`${apiUrl}/menu`);
     if (res.data === 'No menu items found') {
       alert('No menu items found. Please add some items.');
       return;
     }
     setMenu(res.data);
-  };
+  }, [apiUrl]);
 
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     const res = await axios.get(`${apiUrl}/order`);
     if (res.data === 'No orders found') {
       alert('No orders found.'); 
       return;
     }
     setOrders(res.data);
-  };
+  }, [apiUrl]);
 
   const addMenuItem = async () => {
     if (newItem.name && newItem.price) {
@@ -47,7 +47,7 @@ function Admin() {
   useEffect(() => {
     fetchMenu();
     fetchOrders();
-  }, []);
+  }, [fetchMenu, fetchOrders]);
 
   return (
     <div className="container">
